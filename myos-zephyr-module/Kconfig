@@ -1,0 +1,68 @@
+# Main switch for MyOs Module
+
+menuconfig MYOS
+  bool "Enable MyOs cooperative scheduler"
+  help
+    Activates the MyOs-Subsystem, which executes a 
+    cooperative Protothread-Schedler in a Zephyr-Thread
+    
+
+if MYOS
+
+config MYOS_STACK_SIZE
+  int "Size of stack for the MyOs-Thread"
+  default 2048
+  range 256 65535 
+  help
+    Size of stack in bytes for the Zephyr thread in which MyOS runs.
+    
+config MYOS_THREAD_PRIORITY
+  int "Priority of the MyOs-Thread"
+  default 0
+  help 
+    Zephir-Thread-Priority for MyOs
+    Small Number = high priority (depending on Kernel-Configuration)
+
+
+
+
+
+
+
+
+config MYOS_DEBUG
+  bool "Enable MyOs debug output"
+  default n
+  help
+    Enables debug output for MyOs.
+    If disabled, all MyOs debug calls are compiled out.
+
+config MYOS_DEBUG_PROCESS
+  bool "Debug: process module"
+  depends on MYOS_DEBUG
+  default n
+  help
+    Enable debug output for the MyOs process module.
+
+config MYOS_DEBUG_ETIMER
+  bool "Debug: etimer module"
+  depends on MYOS_DEBUG
+  default n
+  help
+    Enable debug output for the MyOs etimer module.
+
+config MYOS_DEBUG_PTIMER
+  bool "Debug: ptimer module"
+  depends on MYOS_DEBUG
+  default n
+  help
+    Enable debug output for the MyOs process timer module.
+
+config MYOS_DEBUG_CORE
+  bool "Debug: core MyOs scheduler"
+  depends on MYOS_DEBUG
+  default n
+  help
+    Enable debug output for the MyOs cooperative scheduler core.    
+
+endif # MYOS
