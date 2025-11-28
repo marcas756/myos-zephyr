@@ -62,7 +62,7 @@
  *   event posting, suitable for various application scenarios, including
  *   interrupt handling.
  * - Detailed statistics collection for monitoring and debugging, depending
- *   on compile-time configuration (MYOSCONF_STATS).
+ *   on compile-time configuration (CONFIG_MYOS_STATISTICS).
  *
  * Event System and Process Polling:
  * - MyOs employs an event system where processes can communicate and signal
@@ -81,10 +81,11 @@
 #ifndef PROCESS_H_
 #define PROCESS_H_
 
-#include "myosconf.h"
+
 #include "pt.h"
 #include "ringbuffer.h"
 #include <stdbool.h>
+#include <stdint.h>
 #include "rtimer.h"
 
 /**
@@ -121,8 +122,7 @@
  *       implementation for the doubly linked list (dlist) is planned for future
  *       development.
  */
-#if (MYOSCONF_PROC_LIST_TYPE == MYOSCONF_DLIST)
-#else
+#if defined(CONFIG_MYOS_PROC_LIST_TYPE_SLIST)
 #include "slist.h"
 typedef slist_t plist_t;
 typedef slist_node_t plist_node_t;
@@ -133,38 +133,23 @@ typedef slist_node_t plist_node_t;
 #define plist_push_front(listptr,nodeptr)            slist_push_front(listptr,nodeptr)
 #define plist_prev(listptr,nodeptr)                  slist_prev(listptr,nodeptr)
 #define plist_foreach(listptr,iterator)              slist_foreach(listptr,iterator)
-#endif
-
-
-/**
- * @def PROCESS_EVENT_QUEUE_SIZE
- * @brief Defines the size of the process event queue.
- *
- * @details
- * This macro sets the size of the event queue used by the process scheduler. The size determines
- * how many events can be queued at one time before the system starts dropping or ignoring new events.
- *
- * If the macro `MYOSCONF_PROC_EVENT_QUEUE_SIZE` is defined in the myos configuration file, its value
- * is used to set the size of the event queue. If it is not defined, a default size of 8 is used.
- *
- * Adjusting the event queue size can have implications on the system's performance and memory usage.
- * A larger queue size can handle more events but requires more memory, whereas a smaller queue size
- * conserves memory but may lead to dropped events in high-load scenarios.
- *
- * Example of configuring a custom event queue size:
- * \code{.c}
- * // In the myos configuration file
- * #define MYOSCONF_PROC_EVENT_QUEUE_SIZE 16
- * \endcode
- *
- * @note The configuration of the event queue size should be carefully considered based on the expected
- *       workload and available system resources.
- */
-#ifdef MYOSCONF_PROC_EVENT_QUEUE_SIZE
-#define PROCESS_EVENT_QUEUE_SIZE    MYOSCONF_PROC_EVENT_QUEUE_SIZE
+#elif defined(CONFIG_MYOS_PROC_LIST_TYPE_DLIST)
+#include "dlist.h"
+typedef dlist_t plist_t;
+typedef dlist_node_t plist_node_t;
+#define PLIST_NODE_TYPE                              DLIST_NODE_TYPE
+#define plist_init(listptr)                          dlist_init(listptr)
+#define plist_erase(listptr,nodeptr)                 dlist_erase(listptr,nodeptr)
+#define plist_next(listptr,nodeptr)                  dlist_next(listptr,nodeptr)
+#define plist_push_front(listptr,nodeptr)            dlist_push_front(listptr,nodeptr)
+#define plist_prev(listptr,nodeptr)                  dlist_prev(listptr,nodeptr)
+#define plist_foreach(listptr,iterator)              dlist_foreach(listptr,iterator)
 #else
-#define PROCESS_EVENT_QUEUE_SIZE    8
+#error "No process list type defined."
 #endif
+
+
+
 
 
 /**
@@ -223,6 +208,7 @@ typedef slist_node_t plist_node_t;
 
 typedef struct process_t process_t;
 typedef struct process_event_t process_event_t;
+typedef uint8_t process_event_id_t;
 
 
 
@@ -258,7 +244,7 @@ typedef int(*process_thread_t)(process_t *process, process_event_t *evt);
  * @var process_t::pt
  * Protothread state for this process.
  * @var process_t::maxslicetime
- * (Optional, with MYOSCONF_STATS) Records the maximum time slice used by this process.
+ * (Optional, with CONFIG_MYOS_STATISTICS) Records the maximum time slice used by this process.
  * @var process_t::pollreq
  * Flag indicating whether this process has requested to be polled.
  */
@@ -268,7 +254,7 @@ struct process_t {
    void* data;
    pt_t pt;
 
-#if (MYOSCONF_STATS)
+#if defined(CONFIG_MYOS_STATISTICS)
    rtimer_timespan_t maxslicetime;
 #endif
 
@@ -700,7 +686,7 @@ bool process_exit(process_t *process);
  * event structure, fills it with the event data, and then pushes it onto the event queue.
  *
  * @note
- * If the `MYOSCONF_STATS` flag is defined, the function also updates the statistics
+ * If the `CONFIG_MYOS_STATISTICS` flag is defined, the function also updates the statistics
  * related to the maximum count of events in the queue.
  *
  * Debugging messages are printed with information about the event posting if
@@ -766,11 +752,8 @@ bool process_post_sync(process_t *to, process_event_id_t evtid, void* data);
  * for example.
  *
  * @note
- * If `MYOSCONF_STATS` is defined, the function measures the processing time
+ * If `CONFIG_MYOS_STATISTICS` is defined, the function measures the processing time
  * and updates the maximum processing time statistic.
- *
- * If `MYOSCONF_PTIMERS` is defined, the function also handles the processing
- * of protothread timers.
  *
  * Example usage:
  * @code

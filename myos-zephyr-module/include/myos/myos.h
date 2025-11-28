@@ -30,7 +30,6 @@
 #define MYOS_H_
 
 
-#include "myosconf.h"
 
 #include "critical.h"
 #include "pt.h"
@@ -43,7 +42,9 @@
 #include "etimer.h"
 #include "rtimer.h"
 
-#if (MYOSCONF_STATS)
+#include <zephyr/kernel.h>
+
+#if defined(CONFIG_MYOS_STATISTICS)
 
 typedef struct {
    unsigned realtime : 1;

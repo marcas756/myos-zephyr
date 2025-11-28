@@ -75,12 +75,12 @@ static plist_t process_running_list;
  * @details
  * Defines a ringbuffer type for queuing process events. This ringbuffer holds events that are
  * posted to processes and are pending to be processed. The size of the ringbuffer is defined by
- * PROCESS_EVENT_QUEUE_SIZE.
+ * CONFIG_MYOS_PROC_EVENT_QUEUE_SIZE.
  *
  * @param process_event_t Type of items in the ringbuffer (process events).
- * @param PROCESS_EVENT_QUEUE_SIZE Size of the ringbuffer, number of events it can hold.
+ * @param MYOS_PROC_EVENT_QUEUE_SIZE Size of the ringbuffer, number of events it can hold.
  */
-RINGBUFFER_TYPEDEF(process_event_queue,process_event_t,PROCESS_EVENT_QUEUE_SIZE);
+RINGBUFFER_TYPEDEF(process_event_queue,process_event_t,CONFIG_MYOS_PROC_EVENT_QUEUE_SIZE);
 
 /**
  * @var process_event_queue
@@ -110,6 +110,15 @@ static bool process_global_pollreq = false;
 
 void process_init(void)
 {
+
+#if defined(CONFIG_MYOS_PROC_LIST_TYPE_SLIST)
+   DBG_PROCESS("Using singly-linked list for process management.\n");
+#elif defined(CONFIG_MYOS_PROC_LIST_TYPE_DLIST)
+   DBG_PROCESS("Using doubly-linked list for process management.\n");
+#endif
+
+   DBG_PROCESS("Using event queue of size %d \n",RINGBUFFER_SIZE(process_event_queue));
+
    /* Initialize the list for running processes. */
    plist_init(&process_running_list);
 
@@ -128,7 +137,7 @@ bool process_post(process_t *to, process_event_id_t evtid, void* data)
    // Check if the event queue is full.
    if(RINGBUFFER_FULL(process_event_queue))
    {
-#if (MYOSCONF_STATS)
+#if defined(CONFIG_MYOS_STATISTICS)
       myos_stats.errflags.eventqueue = 1;
 #endif
       return false;
@@ -148,7 +157,7 @@ bool process_post(process_t *to, process_event_id_t evtid, void* data)
    // Push the event onto the event queue.
    RINGBUFFER_PUSH(process_event_queue);
 
-#if (MYOSCONF_STATS)
+#if defined(CONFIG_MYOS_STATISTICS)
    // Update the maximum queue count for statistics.
    if(RINGBUFFER_COUNT(process_event_queue) > myos_stats.maxqueuecount)
    {
@@ -174,7 +183,7 @@ bool process_post(process_t *to, process_event_id_t evtid, void* data)
  * During the event handling, this function measures the execution time of the
  * process (slicetime) and updates the process's `maxslicetime` if the current
  * execution time is the longest one recorded. This feature is only active if
- * `MYOSCONF_STATS` is defined.
+ * `CONFIG_MYOS_STATISTICS` is defined.
  *
  * If the process's state after handling the event is `PT_STATE_TERMINATED`, the
  * process is removed from the running processes list. The function then restores
@@ -202,13 +211,13 @@ bool process_deliver_event(process_event_t *evt)
    {
       PROCESS_CONTEXT_BEGIN(evt->to);
 
-#if (MYOSCONF_STATS)
+#if defined(CONFIG_MYOS_STATISTICS)
       rtimer_timespan_t slicetime = rtimer_now();
 #endif
 
       int pstate = PROCESS_THIS()->thread(PROCESS_THIS(), evt);
 
-#if (MYOSCONF_STATS)
+#if defined(CONFIG_MYOS_STATISTICS)
       slicetime = rtimer_now() - slicetime;
       if(slicetime > PROCESS_THIS()->maxslicetime)
       {
@@ -304,7 +313,7 @@ void process_poll(process_t *process)
 inline int process_run(void)
 {
    // Process polling requests.
-#if (MYOSCONF_STATS)
+#if defined(CONFIG_MYOS_STATISTICS)
    rtimer_timespan_t proctime = rtimer_now();
 #endif
 
@@ -325,9 +334,9 @@ inline int process_run(void)
    }
 
    // Process protothread timers if enabled.
-#if (MYOSCONF_PTIMERS)
+
    ptimer_processing();
-#endif
+
 
    // Process events from the event queue.
    if(RINGBUFFER_COUNT(process_event_queue))
@@ -337,7 +346,7 @@ inline int process_run(void)
    }
 
    // Update processing time statistics.
-#if (MYOSCONF_STATS)
+#if defined(CONFIG_MYOS_STATISTICS)
    proctime = rtimer_now() - proctime;
    if(proctime > myos_stats.maxproctime)
    {

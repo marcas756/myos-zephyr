@@ -97,18 +97,18 @@ timestamp_t ptimer_next_stop = 0;
  */
 bool ptimer_pending = false;
 
-#if MYOSCONF_STATS
+#if defined(CONFIG_MYOS_STATISTICS)
 /*!
  * @var ptimer_list_size
  * @brief Count of active process timers for system statistics.
- * @details This variable, available when MYOSCONF_STATS is enabled, keeps track of the number of active process timers in MyOS.
+ * @details This variable, available when CONFIG_MYOS_STATISTICS is enabled, keeps track of the number of active process timers in MyOS.
  *          It's integral for collecting system statistics and kernel instrumentation, allowing for performance monitoring and analysis.
  *          The count increases with each new ptimer added and decreases when a ptimer is removed. This statistical tracking
  *          is vital in scenarios where understanding the load and performance of the system is crucial.
  *
  * Usage Example:
  * @code
- *     // Assuming MYOSCONF_STATS is enabled
+ *     // Assuming CONFIG_MYOS_STATISTICS is enabled
  *     size_t active_timers = ptimer_list_size;
  *     // The variable active_timers can be used for logging or performance analysis.
  * @endcode
@@ -184,7 +184,7 @@ static void ptimer_next_stop_update(ptimer_t *ptimer)
  *             front of the ptimer_running_list, and its running status is set to true. This is important for subsequent
  *             timer operations that rely on this list to determine active timers.
  *
- *             Additionally, if MyOS is configured to collect statistics (MYOSCONF_STATS), the function updates the
+ *             Additionally, if MyOS is configured to collect statistics (CONFIG_MYOS_STATISTICS), the function updates the
  *             ptimer_list_size and checks if it exceeds the maximum size recorded (myos_stats.ptlist_size_max), updating
  *             the maximum size if necessary. This statistical data can be vital for performance tuning and system monitoring.
  *
@@ -206,7 +206,7 @@ void ptimer_add_to_list(ptimer_t *ptimer)
    {
       ptlist_push_front(&ptimer_running_list,ptimer);
 
-#if MYOSCONF_STATS
+#if defined(CONFIG_MYOS_STATISTICS)
       if(++ptimer_list_size > myos_stats.ptlist_size_max)
       {
           myos_stats.ptlist_size_max = ptimer_list_size;
@@ -230,7 +230,7 @@ void ptimer_add_to_list(ptimer_t *ptimer)
  *             ptimer_running_list using the ptlist_erase function. This removal is vital to prevent the system
  *             from processing an inactive timer.
  *
- *             If MyOS is configured with MYOSCONF_STATS, the function decrements the ptimer_list_size counter.
+ *             If MyOS is configured with CONFIG_MYOS_STATISTICS, the function decrements the ptimer_list_size counter.
  *             This decrement is crucial for accurate system monitoring and statistics, particularly in systems
  *             where resource usage and performance are critical.
  *
@@ -250,7 +250,7 @@ void ptimer_remove_from_list(ptimer_t *ptimer)
       ptimer->running = false;
       ptlist_erase(&ptimer_running_list,ptimer);
 
-#if MYOSCONF_STATS
+#if defined(CONFIG_MYOS_STATISTICS)
       ptimer_list_size--;
 #endif
    }
@@ -280,6 +280,12 @@ PROCESS_THREAD(ptimer_process)
    // Initialization of the process
    PROCESS_BEGIN();
 
+#if defined(CONFIG_MYOS_PTIMER_LIST_TYPE_SLIST)
+   DBG("ptimer_process: Using singly-linked list for ptimer management.\n");
+#elif defined(CONFIG_MYOS_PTIMER_LIST_TYPE_DLIST)
+   DBG("ptimer_process: Using doubly-linked list for ptimer management.\n");
+#endif
+
    DBG("ptimer_process: started\n");
    
    // Initialize the list of running ptimers
@@ -308,7 +314,7 @@ DBG("%p, %p\n",&ptimer_running_list, ptimer_running_list.next);
             // Remove ptimer from list
             ptlist_erase(&ptimer_running_list, curr);
             curr->running = false;
-#if MYOSCONF_STATS
+#if defined(CONFIG_MYOS_STATISTICS)
             ptimer_list_size--;
 #endif
 
@@ -363,8 +369,8 @@ extern bool process_deliver_event(process_event_t *evt);
 
 void ptimer_processing(void)
 {
-    // Check for MYOSCONF_STATS to enable statistics
-#if MYOSCONF_STATS
+    // Check for CONFIG_MYOS_STATISTICS to enable statistics
+#if defined(CONFIG_MYOS_STATISTICS)
     rtimer_timestamp_t start;
     rtimer_timespan_t slicetime;
 #endif
@@ -374,7 +380,7 @@ void ptimer_processing(void)
         ptimer_pending = false;
 
         // Record start time if statistics are enabled
-#if MYOSCONF_STATS
+#if defined(CONFIG_MYOS_STATISTICS)
         start = rtimer_now();
 #endif
 
@@ -382,7 +388,7 @@ void ptimer_processing(void)
         process_deliver_event((process_event_t*)&ptimer_poll_evt);
 
         // Calculate and record the processing time for performance stats
-#if MYOSCONF_STATS
+#if defined(CONFIG_MYOS_STATISTICS)
         slicetime = (rtimer_timespan_t)RTIMER_TIMESTAMP_DIFF(rtimer_now(), start);
         if (ptimer_process.maxslicetime < slicetime) {
             ptimer_process.maxslicetime = slicetime;

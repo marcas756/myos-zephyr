@@ -49,27 +49,8 @@
 #include "myos.h"
 #include <stdbool.h>
 
-#if (MYOSCONF_PTIMER_LIST_TYPE == MYOSCONF_DLIST)
 
-// Definitions for double-linked list based ptimer list
-#include "dlist.h"
-typedef dlist_t ptlist_t;
-typedef dlist_node_t ptlist_node_t;
-#define PTLIST_NODE_TYPE                              DLIST_NODE_TYPE
-#define ptlist_init(listptr)                          dlist_init(listptr)
-#define ptlist_erase(listptr,nodeptr)                 dlist_erase(listptr,nodeptr)
-#define ptlist_next(listptr,nodeptr)                  dlist_next(listptr,nodeptr)
-#define ptlist_push_front(listptr,nodeptr)            dlist_push_front(listptr,nodeptr)
-#define ptlist_prev(listptr,nodeptr)                  dlist_prev(listptr,nodeptr)
-#define ptlist_foreach(listptr,iterator)              dlist_foreach(listptr,iterator)
-#define ptlist_find(listptr,nodeptr)                  dlist_findlistptr,nodeptr)
-#define ptlist_begin(listptr)                         dlist_begin(listptr)
-#define ptlist_end(listptr)                           dlist_end(listptr)
-#define ptlist_empty(listptr)                         dlist_empty(listptr)
-
-#else
-
-// Definitions for single-linked list based ptimer list
+#if defined(CONFIG_MYOS_PTIMER_LIST_TYPE_SLIST)
 #include "slist.h"
 typedef slist_t ptlist_t;
 typedef slist_node_t ptlist_node_t;
@@ -86,7 +67,26 @@ typedef slist_node_t ptlist_node_t;
 #define ptlist_empty(listptr)                         slist_empty(listptr)
 #define ptlist_foreach(listptr,iterator)              slist_foreach(listptr,iterator)
 #define ptlist_size(listptr)                          slist_size(listptr)
+#elif defined(CONFIG_MYOS_PTIMER_LIST_TYPE_DLIST)
+#include "dlist.h"
+typedef dlist_t ptlist_t;
+typedef dlist_node_t ptlist_node_t;
+#define PTLIST_NODE_TYPE                              DLIST_NODE_TYPE
+#define ptlist_init(listptr)                          dlist_init(listptr)
+#define ptlist_erase(listptr,nodeptr)                 dlist_erase(listptr,nodeptr)
+#define ptlist_next(listptr,nodeptr)                  dlist_next(listptr,nodeptr)
+#define ptlist_push_front(listptr,nodeptr)            dlist_push_front(listptr,nodeptr)
+#define ptlist_prev(listptr,nodeptr)                  dlist_prev(listptr,nodeptr)
+#define ptlist_foreach(listptr,iterator)              dlist_foreach(listptr,iterator)
+#define ptlist_find(listptr,nodeptr)                  dlist_findlistptr,nodeptr)
+#define ptlist_begin(listptr)                         dlist_begin(listptr)
+#define ptlist_end(listptr)                           dlist_end(listptr)
+#define ptlist_empty(listptr)                         dlist_empty(listptr)
+#else
+#error "No ptimer list type defined."
 #endif
+
+
 
 
 PROCESS_EXTERN(ptimer_process);
@@ -159,7 +159,7 @@ struct ptimer_t{
  * @brief Processes pending process timers.
  * @details This function is responsible for handling and processing all pending process timers (ptimers) in MyOS.
  *          It checks if there are any ptimers pending and if the next stop time has passed. If so, it triggers
- *          the ptimer_poll_evt event to handle the expired timers. Additionally, if MYOSCONF_STATS is enabled,
+ *          the ptimer_poll_evt event to handle the expired timers. Additionally, if CONFIG_MYOS_STATISTICS is enabled,
  *          it records the time taken to process the timers for performance monitoring.
  *
  * Usage Example:

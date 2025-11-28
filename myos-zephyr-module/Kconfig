@@ -9,12 +9,26 @@ menuconfig MYOS
 
 if MYOS
 
+config MYOS_STATISTICS
+    bool "Enable MyOS runtime statistics"
+    default n
+    help
+      Enables collection and output of MyOS runtime statistics.
+      If disabled, all statistics-related calls are compiled out.
+
 config MYOS_STACK_SIZE
   int "Size of stack for the MyOs-Thread"
   default 2048
   range 256 65535 
   help
     Size of stack in bytes for the Zephyr thread in which MyOS runs.
+
+config MYOS_PROC_EVENT_QUEUE_SIZE
+    int "Size of the MyOS process event queue"
+    default 85
+    range 1 65535
+    help
+      Size of the process event queue used by MyOS.
     
 config MYOS_THREAD_PRIORITY
   int "Priority of the MyOs-Thread"
@@ -22,12 +36,6 @@ config MYOS_THREAD_PRIORITY
   help 
     Zephir-Thread-Priority for MyOs
     Small Number = high priority (depending on Kernel-Configuration)
-
-
-
-
-
-
 
 
 config MYOS_DEBUG
@@ -64,5 +72,42 @@ config MYOS_DEBUG_CORE
   default n
   help
     Enable debug output for the MyOs cooperative scheduler core.    
+
+
+
+# Select the process list type MyOS should use
+choice MYOS_PROC_LIST_TYPE
+    prompt "Process list type"
+    help
+      Choose which internal list type MyOS should use for storing processes.
+
+config MYOS_PROC_LIST_TYPE_SLIST
+    bool "Singly-linked list"
+
+config MYOS_PROC_LIST_TYPE_DLIST
+    bool "Doubly-linked list"
+
+endchoice
+
+
+
+
+# Select the list type used for ptimers
+choice MYOS_PTIMER_LIST_TYPE
+    prompt "PTimer list type"
+    help
+      Choose which internal list type MyOS should use for
+      storing ptimers.
+
+config MYOS_PTIMER_LIST_TYPE_SLIST
+    bool "Singly-linked list"
+
+config MYOS_PTIMER_LIST_TYPE_DLIST
+    bool "Doubly-linked list"
+
+endchoice
+
+
+
 
 endif # MYOS

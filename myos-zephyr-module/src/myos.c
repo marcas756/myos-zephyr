@@ -36,7 +36,7 @@
 #define DBG(...) do{}while(0)
 #endif
 
-#if (MYOSCONF_STATS)
+#if defined(CONFIG_MYOS_STATISTICS)
 
 myos_stats_t myos_stats;
 
@@ -92,13 +92,9 @@ void myos_init(void)
    rtimer_init();
 
 
-// #if (MYOSCONF_PTIMERS)
-//     ptimer_module_init();
-//     ctimer_module_init();
-//     etimer_module_init();
-// #endif
 
-#if (MYOSCONF_STATS)
+
+#if defined(CONFIG_MYOS_STATISTICS)
     process_start(&idle_process,NULL);
 #endif
 
