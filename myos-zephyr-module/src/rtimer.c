@@ -33,7 +33,7 @@
 
 #include "rtimer.h"
 #include <stdlib.h>
-#include "critical.h"
+#include "mutex.h"
 
 
 rtimer_t *rtimer_next = NULL;

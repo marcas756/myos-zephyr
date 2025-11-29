@@ -6,6 +6,7 @@ zephyr_library_sources(
     src/etimer.c
     src/hash.c
     src/itempool.c
+    src/mutex.c
     src/myos.c
     src/process.c
     src/ptimer.c

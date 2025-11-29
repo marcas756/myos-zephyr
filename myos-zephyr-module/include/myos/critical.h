@@ -93,7 +93,7 @@
             Usage example : CRITICAL_STATEMENT( a = b );
 */
 #define CRITICAL_STATEMENT(x)    \
-   do{                           \ 
+   do{                           \
       CRITICAL_SECTION_BEGIN();  \
       x;                         \
       CRITICAL_SECTION_END();    \
