@@ -28,16 +28,15 @@
 #ifndef CRITICAL_ARCH_H_
 #define CRITICAL_ARCH_H_
 
+#include <zephyr/irq.h>
+
+#define CRITICAL_ARCH_SECTION_BEGIN()           \
+   do {                                         \
+      unsigned int __myos_irq_key__ = irq_lock();
 
 
-
-
-/* Read PRIMASK register, check interrupt status before you disable them */
-/* Returns 0 if they are enabled, or non-zero if disabled */
-/* Disable interrupts */
-#define CRITICAL_ARCH_SECTION_BEGIN() 
-
-
-#define CRITICAL_ARCH_SECTION_END()   
+#define CRITICAL_ARCH_SECTION_END()   \
+      irq_unlock(__myos_irq_key__);     \
+   }while(0)   
 
 #endif /* CRITICAL_ARCH_H_ */

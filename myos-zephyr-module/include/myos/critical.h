@@ -86,26 +86,18 @@
 
 /*!
    \brief   Critical section for one statement
-   \details In computer programming, a statement is a syntactic unit of an
-            imperative programming language that expresses some action to be
-            carried out.
-
-            Simple statements are complete in themselves; these include
-            assignments, subroutine calls, and a few statements which may
-            significantly affect the program flow of control (e.g. goto,
-            return, stop/halt).
-
-            https://en.wikipedia.org/wiki/Statement_(computer_science)
-
-            This macro disables interrupts before entering the critical section,
+   \details This macro disables interrupts before entering the critical section,
             executes the statement provided and enables interrupts again before
             leaving the critical section.
 
             Usage example : CRITICAL_STATEMENT( a = b );
 */
-#define CRITICAL_STATEMENT(x) \
-   CRITICAL_SECTION_BEGIN();  \
-   x;                         \
-   CRITICAL_SECTION_END();
+#define CRITICAL_STATEMENT(x)    \
+   do{                           \ 
+      CRITICAL_SECTION_BEGIN();  \
+      x;                         \
+      CRITICAL_SECTION_END();    \
+   }while(0)
+
 
 #endif /* CRITICAL_H_ */

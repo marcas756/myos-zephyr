@@ -37,29 +37,17 @@
 
 
 rtimer_t *rtimer_next = NULL;
-bool rtimer_mutex = false;
+mutex_t rtimer_mutex = false;
 
 bool rtimer_lock(void)
 {
-   bool status = false;
-
-   CRITICAL_SECTION_BEGIN();
-
-   if ( !rtimer_mutex )
-   {
-      rtimer_mutex = true;
-      status = true;
-   }
-
-   CRITICAL_SECTION_END();
-
-   return status;
+   return mutex_lock(&rtimer_mutex);
 }
 
 void rtimer_release()
-{
+{   
    rtimer_next = NULL;
-   rtimer_mutex = false;
+   mutex_release(&rtimer_mutex);
 }
 
 

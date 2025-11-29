@@ -35,10 +35,9 @@
 #ifndef RTIMER_H_
 #define RTIMER_H_
 
-
-
 #include "rtimer_arch.h"
 #include "stdbool.h"
+#include "mutex.h"
 
 typedef rtimer_arch_timestamp_t rtimer_timestamp_t;
 typedef rtimer_timestamp_t rtimer_timespan_t;
@@ -58,16 +57,13 @@ typedef struct {
 } rtimer_t;
 
 
-
-#define PROCESS_RTIMER_OBTAIN() \
-   do{ \
-      while(!rtimer_lock()) \
-      { \
-         PROCESS_SUSPEND(); \
-      } \
+#define PROCESS_RTIMER_ACQUIRE()          \
+   do{                                    \
+      while( rtimer_lock() == false )     \
+      {                                   \
+         PROCESS_SUSPEND();               \
+      }                                   \
    }while(0)
-
-
 
 
 void rtimer_start(rtimer_t *rtimer, rtimer_timespan_t span, rtimer_callback_t callback, void* data);

@@ -33,7 +33,6 @@
 
 timestamp_arch_t timestamp_arch_now(void)
 {
-     // printf("%lld\n",(clock()*1000ULL/CLOCKS_PER_SEC));
-    return (timestamp_arch_t) ((clock()* 1000ULL)/CLOCKS_PER_SEC); 
+    return (timestamp_arch_t) ((clock()* TIMESTAMP_ARCH_TICKS_PER_SEC)/CLOCKS_PER_SEC); 
 }
 
