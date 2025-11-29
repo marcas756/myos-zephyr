@@ -27,41 +27,11 @@
 */
 
 
-/*!
-    \file       timestamp_arch.h
-
-    \brief      Architecture depending part of time stamp implementation
-
-    \details    Provides the architecture dependent part of time stamp implementation
-                for architecture hosted.
-
-                Hosted means that the myos runs in an own process on top of a host
-                operating system.
-
-*/
-
-
-#ifndef TIMESTAMP_ARCH_H_
-#define TIMESTAMP_ARCH_H_
-
-#include <stdint.h>
+#include"timestamp_arch.h" 
 #include <zephyr/kernel.h>
 
+timestamp_arch_t timestamp_arch_now(void)
+{
+      return (timestamp_arch_t)k_uptime_get_32(); 
+}
 
-
-
-#ifdef CONFIG_ARCH_POSIX
-#include <time.h>
-#define TIMESTAMP_ARCH_TICKS_PER_SEC CLOCKS_PER_SEC
-#else
-#define TIMESTAMP_ARCH_TICKS_PER_SEC CONFIG_SYS_CLOCK_TICKS_PER_SEC
-#endif
-
-
-
-typedef uint32_t timestamp_arch_t;
-#define TIMESTAMP_ARCH_DIFF(a,b)         ((int32_t)((a)-(b)))
-#define timestamp_arch_module_init() do{}while(0)
-timestamp_arch_t timestamp_arch_now(void);
-
-#endif /* TIMESTAMP_ARCH_H_ */

@@ -47,8 +47,6 @@ void timer_restart(timer_t *timer)
     timer->start = timestamp_now();
 }
 
-
-
 void timer_reset(timer_t *timer)
 {
    timer->start += timer->span;

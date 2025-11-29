@@ -155,7 +155,7 @@ typedef timestamp_t timespan_t;
  * // At system initialization
  * timestamp_module_init();
  */
-#define timestamp_module_init  timestamp_arch_module_init
+void timestamp_module_init(void);
 
 /**
  * @def timestamp_now

@@ -27,24 +27,13 @@
 */
 
 
-#include"timestamp_arch.h"
+#include"arch/timestamp_arch.h" 
 
- 
-#include <zephyr/kernel.h>
-
-#ifdef CONFIG_ARCH_POSIX
 #include <time.h>
-#endif
-
 
 timestamp_arch_t timestamp_arch_now(void)
 {
-#ifdef CONFIG_ARCH_POSIX
-      return (timestamp_arch_t)clock();      
-#else
-      return (timestamp_arch_t)k_uptime_get_32(); 
-#endif
-
-
+     // printf("%lld\n",(clock()*1000ULL/CLOCKS_PER_SEC));
+    return (timestamp_arch_t) ((clock()* 1000ULL)/CLOCKS_PER_SEC); 
 }
 

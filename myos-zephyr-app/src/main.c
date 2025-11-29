@@ -27,13 +27,16 @@ PROCESS_THREAD(counter)
 {
 	static etimer_t et;
 
+	static uint32_t cnt = 0;
+
     PROCESS_BEGIN();
 
 	LOG_INF("Started counter process");
 	
 	while(1)
 	{
-		PROCESS_SLEEP(&et,TIMESTAMP_TICKS_PER_SEC);
+		LOG_INF("Counter Process : %d", cnt++);
+		PROCESS_SLEEP(&et,TIMESTAMP_TICKS_PER_SEC);		
 	}
 
 	PROCESS_END();

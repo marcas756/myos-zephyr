@@ -37,6 +37,46 @@ config MYOS_THREAD_PRIORITY
     Zephir-Thread-Priority for MyOs
     Small Number = high priority (depending on Kernel-Configuration)
 
+# Select the process list type MyOS should use
+choice MYOS_PROC_LIST_TYPE
+    prompt "Process list type"
+    help
+      Choose which internal list type MyOS should use for storing processes.
+
+config MYOS_PROC_LIST_TYPE_SLIST
+    bool "Singly-linked list"
+
+config MYOS_PROC_LIST_TYPE_DLIST
+    bool "Doubly-linked list"
+
+endchoice
+
+# Select the list type used for ptimers
+choice MYOS_PTIMER_LIST_TYPE
+    prompt "PTimer list type"
+    help
+      Choose which internal list type MyOS should use for
+      storing ptimers.
+
+config MYOS_PTIMER_LIST_TYPE_SLIST
+    bool "Singly-linked list"
+
+config MYOS_PTIMER_LIST_TYPE_DLIST
+    bool "Doubly-linked list"
+
+endchoice
+
+
+
+
+config MYOS_TIMESTAMP_SIZE
+    int "MyOS timestamp size (bits)"
+    default 16
+    range 16 64
+    help
+      Valid values: 16, 32, 64
+
+
 
 config MYOS_DEBUG
   bool "Enable MyOs debug output"
@@ -71,43 +111,15 @@ config MYOS_DEBUG_CORE
   depends on MYOS_DEBUG
   default n
   help
-    Enable debug output for the MyOs cooperative scheduler core.    
+    Enable debug output for the MyOs cooperative scheduler core. 
+        
 
-
-
-# Select the process list type MyOS should use
-choice MYOS_PROC_LIST_TYPE
-    prompt "Process list type"
-    help
-      Choose which internal list type MyOS should use for storing processes.
-
-config MYOS_PROC_LIST_TYPE_SLIST
-    bool "Singly-linked list"
-
-config MYOS_PROC_LIST_TYPE_DLIST
-    bool "Doubly-linked list"
-
-endchoice
-
-
-
-
-# Select the list type used for ptimers
-choice MYOS_PTIMER_LIST_TYPE
-    prompt "PTimer list type"
-    help
-      Choose which internal list type MyOS should use for
-      storing ptimers.
-
-config MYOS_PTIMER_LIST_TYPE_SLIST
-    bool "Singly-linked list"
-
-config MYOS_PTIMER_LIST_TYPE_DLIST
-    bool "Doubly-linked list"
-
-endchoice
-
-
+config MYOS_DEBUG_TIMESTAMP
+  bool "Debug: timestamp module"
+  depends on MYOS_DEBUG
+  default n
+  help
+    Enable debug output for the MyOs timestamp module.  
 
 
 endif # MYOS
