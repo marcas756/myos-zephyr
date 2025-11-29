@@ -545,7 +545,7 @@ int process_thread_##name(process_t *process, process_event_t *evt)
 #define PROCESS_WAIT_ANY_EVENT() PT_YIELD(&PROCESS_PT())
 
 /**
- * @def PROCESS_SUSPEND()
+ * @def PROCESS_YIELD()
  * @brief Temporarily suspends the process.
  *
  * @details
@@ -553,7 +553,7 @@ int process_thread_##name(process_t *process, process_event_t *evt)
  * event to itself and then waits for this event before continuing execution. This
  * allows other processes or tasks to run while the current process is suspended.
  */
-#define PROCESS_SUSPEND() \
+#define PROCESS_YIELD() \
    do{ \
       process_post(PROCESS_THIS(),PROCESS_EVENT_CONTINUE,NULL); \
       PROCESS_WAIT_EVENT(PROCESS_EVENT_CONTINUE); \

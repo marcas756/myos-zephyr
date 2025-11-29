@@ -53,7 +53,7 @@ PROCESS_THREAD(idle_process)
 
    while(1)
    {
-      PROCESS_SUSPEND();
+      PROCESS_YIELD();
 
       rtstop = rtimer_now();
       stop = timestamp_now();

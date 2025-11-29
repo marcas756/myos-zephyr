@@ -61,7 +61,7 @@ typedef struct {
    do{                                    \
       while( rtimer_lock() == false )     \
       {                                   \
-         PROCESS_SUSPEND();               \
+         PROCESS_YIELD();               \
       }                                   \
    }while(0)
 
