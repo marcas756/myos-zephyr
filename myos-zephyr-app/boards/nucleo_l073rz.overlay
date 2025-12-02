@@ -53,7 +53,7 @@ stm32_lp_tick_source: &lptim1 {
 };
 
 
-&timers6 {
+&timers21 {
     status = "okay";
     st,prescaler = <639>;   /* 32 MHz / (639+1) = 50 kHz */
 

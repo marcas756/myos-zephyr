@@ -102,6 +102,16 @@ config MYOS_DEBUG_PTIMER
   help
     Enable debug output for the MyOs process timer module.
 
+
+config MYOS_DEBUG_RTIMER
+  bool "Debug: rtimer module"
+  depends on MYOS_DEBUG
+  default n
+  help
+    Enable debug output for the MyOs rtimer module.
+
+
+
 config MYOS_DEBUG_CORE
   bool "Debug: core MyOs scheduler"
   depends on MYOS_DEBUG

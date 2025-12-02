@@ -61,9 +61,20 @@ typedef struct {
    do{                                    \
       while( rtimer_lock() == false )     \
       {                                   \
-         PROCESS_YIELD();               \
+         PROCESS_YIELD();                 \
       }                                   \
    }while(0)
+
+#define PROCESS_RTIMER_JOIN()                \
+   do{                                       \
+      while( rtimer_is_locked() == true )    \
+      {                                      \
+         PROCESS_YIELD();                    \
+      }                                      \
+   }while(0)
+
+
+
 
 
 void rtimer_start(rtimer_t *rtimer, rtimer_timespan_t span, rtimer_callback_t callback, void* data);
@@ -72,6 +83,7 @@ rtimer_timespan_t rtimer_left(rtimer_t *rtimer);
 #define rtimer_expired(rtimerptr) (rtimer_left(rtimerptr) == 0)
 #define rtimer_timestamp_stop(rtimerptr) ((rtimerptr)->start+(rtimerptr)->span)
 bool rtimer_lock(void);
+bool rtimer_is_locked();
 
 #define  rtimer_module_init  rtimer_arch_module_init
 

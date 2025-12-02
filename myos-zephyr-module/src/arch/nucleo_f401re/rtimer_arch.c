@@ -36,3 +36,4 @@ rtimer_arch_timestamp_t rtimer_arch_now(void)
     counter_get_value(tim9_counter_dev, &timestamp);
     return (rtimer_arch_timestamp_t)timestamp;
 }
+

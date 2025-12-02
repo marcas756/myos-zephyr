@@ -50,6 +50,11 @@ void rtimer_release()
    mutex_release(&rtimer_mutex);
 }
 
+bool rtimer_is_locked()
+{
+   return mutex_is_locked(&rtimer_mutex);
+}
+
 
 void rtimer_scheduler (void)
 {

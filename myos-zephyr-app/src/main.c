@@ -26,10 +26,31 @@ static int my_early_init(void)
 SYS_INIT(my_early_init, POST_KERNEL, 50);
 
 
+
+
+
+void rtimer_callback(void* data)
+{
+	static int cnt = 0;
+
+	if( cnt++ < 100 )
+	{
+		rtimer_t* rt = (rtimer_t*)data;	
+		rtimer_reset(rt);
+		rtimer_lock();
+	}
+
+
+
+	LOG_INF("Rtimer callback fired %d",cnt);
+}
+
+
 PROCESS(counter,counter);
 PROCESS_THREAD(counter)
 {
 	static etimer_t et;
+	static rtimer_t rt;
 
 	static uint32_t cnt = 0;
 
@@ -37,26 +58,14 @@ PROCESS_THREAD(counter)
 
 	LOG_INF("Started counter process");
 
-
+	PROCESS_RTIMER_ACQUIRE();
+	rtimer_start(&rt, RTIMER_TICKS_PER_SEC/4 , rtimer_callback, &rt);
+	PROCESS_RTIMER_JOIN();
 	
 	while(1)
 	{
-		LOG_INF("Counter Process : %d", cnt++);
-
-		static uint32_t start;
-		static uint32_t stop;
-
-		start = rtimer_now();
-		//LOG_INF("TIM6 Counter Start Value: %u", start);
-
-
-		PROCESS_SLEEP(&et,TIMESTAMP_TICKS_PER_SEC/8);	
-		
-		stop = rtimer_now();
-		LOG_INF("Start:%d  Stop: %d Delta: %d\n", start,stop,RTIMER_TIMESTAMP_DIFF(stop,start));
-
-
-		
+		LOG_INF("Process loop %d",cnt++);
+		PROCESS_SLEEP(&et,TIMESTAMP_TICKS_PER_SEC);
 	}
 
 
