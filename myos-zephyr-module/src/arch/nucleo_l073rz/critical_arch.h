@@ -25,13 +25,18 @@
    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
    OTHER DEALINGS IN THE SOFTWARE.
 */
+#ifndef CRITICAL_ARCH_H_
+#define CRITICAL_ARCH_H_
+
+#include <zephyr/irq.h>
+
+#define CRITICAL_ARCH_SECTION_BEGIN()           \
+   do {                                         \
+      unsigned int __myos_irq_key__ = irq_lock();
 
 
-#include"timestamp_arch.h" 
-#include <zephyr/kernel.h>
+#define CRITICAL_ARCH_SECTION_END()   \
+      irq_unlock(__myos_irq_key__);     \
+   }while(0)   
 
-timestamp_arch_t timestamp_arch_now(void)
-{
-      return (timestamp_arch_t)k_uptime_get_32(); 
-}
-
+#endif /* CRITICAL_ARCH_H_ */

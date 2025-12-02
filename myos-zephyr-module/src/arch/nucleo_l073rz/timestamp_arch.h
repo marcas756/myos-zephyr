@@ -27,12 +27,37 @@
 */
 
 
-#include"arch/timestamp_arch.h" 
+/*!
+    \file       timestamp_arch.h
 
-#include <time.h>
+    \brief      Architecture depending part of time stamp implementation
 
-timestamp_arch_t timestamp_arch_now(void)
-{
-    return (timestamp_arch_t) ((clock()* TIMESTAMP_ARCH_TICKS_PER_SEC)/CLOCKS_PER_SEC); 
-}
+    \details    Provides the architecture dependent part of time stamp implementation
+                for architecture hosted.
 
+                Hosted means that the myos runs in an own process on top of a host
+                operating system.
+
+*/
+
+
+#ifndef TIMESTAMP_ARCH_H_
+#define TIMESTAMP_ARCH_H_
+
+#include <stdint.h>
+#include "utils.h"
+ 
+
+#define TIMESTAMP_ARCH_TICKS_PER_SEC 1000
+
+typedef UTILS_UINT(CONFIG_MYOS_TIMESTAMP_SIZE) timestamp_arch_t;
+
+/* Safe wrap-around difference */
+#define TIMESTAMP_ARCH_DIFF(a, b) \
+    ((UTILS_INT(CONFIG_MYOS_TIMESTAMP_SIZE))((timestamp_arch_t)(a) - (timestamp_arch_t)(b)))
+
+
+#define timestamp_arch_module_init() do{}while(0)
+timestamp_arch_t timestamp_arch_now(void);
+
+#endif /* TIMESTAMP_ARCH_H_ */

@@ -27,25 +27,12 @@
 */
 
 
-#ifndef RTIMER_ARCH_H_
-#define RTIMER_ARCH_H_
+#include"timestamp_arch.h" 
 
-#include <stdint.h>  
+#include <time.h>
 
- 
+timestamp_arch_t timestamp_arch_now(void)
+{
+    return (timestamp_arch_t) ((clock()* TIMESTAMP_ARCH_TICKS_PER_SEC)/CLOCKS_PER_SEC); 
+}
 
- 
-
-typedef uint16_t rtimer_arch_timestamp_t;
-typedef uint16_t rtimer_arch_timespan_t;
-
-#define RTIMER_TIMESTAMP_ARCH_DIFF(a,b)         ((int16_t)((a)-(b)))
-#define RTIMER_ARCH_RESOLUTION                   (16e-6)        //!< 16us
-#define RTIMER_ARCH_TICKS_PER_SEC               (1/RTIMER_ARCH_RESOLUTION)
-
-
-#define rtimer_arch_now()  0      
-void rtimer_arch_timer_set(rtimer_arch_timestamp_t stop);
-#define rtimer_arch_init()  
-
-#endif /* RTIMER_ARCH_H_ */

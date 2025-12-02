@@ -1,0 +1,79 @@
+
+&clk_lsi {
+	status = "disabled";
+};
+
+&clk_hsi48 {
+	status = "disabled";
+};
+
+
+stm32_lp_tick_source: &lptim1 {
+	status = "disabled";
+};
+
+&usart1 {
+	status = "disabled";
+};
+
+&usart2 {
+	current-speed = <230400>;
+};
+
+&i2c1 {
+	status = "disabled";
+};
+
+&i2c2 {
+	status = "disabled";
+};
+
+&spi1 {
+	status = "disabled";
+};
+
+&iwdg {
+	status = "disabled";
+};
+
+&adc1 {
+	status = "disabled";
+};
+
+&die_temp {
+	status = "disabled";
+};
+
+&dac1 {
+    status = "disabled";
+};
+
+&timers2 {
+	status = "disabled";
+};
+
+
+&timers6 {
+    status = "okay";
+    st,prescaler = <639>;   /* 32 MHz / (639+1) = 50 kHz */
+
+    counter {
+        status = "okay";
+    };
+};
+
+&rtc {
+	status = "disabled";
+};
+
+&rng {
+	status = "disabled";
+};
+
+&eeprom {
+	status = "disabled";
+};
+
+&vref {
+	status = "disabled";
+};

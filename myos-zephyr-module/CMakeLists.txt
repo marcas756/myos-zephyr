@@ -1,6 +1,17 @@
 zephyr_library()
 
+set(STM32_BOARDS
+    nucleo_l073rz
+    nucleo_f0401re
+)
+
+
 zephyr_library_sources(
+  # Arch specific files
+    src/arch/${BOARD}/timestamp_arch.c
+    src/arch/${BOARD}/rtimer_arch.c    
+
+  # Common files 
     src/ctimer.c
     src/dlist.c
     src/etimer.c
@@ -11,25 +22,15 @@ zephyr_library_sources(
     src/process.c
     src/ptimer.c
     src/rtimer.c
-    src/rtimer_arch.c
     src/slist.c
     src/timer.c
     src/timestamp.c
 )
 
-# timestamp_arch Backend wählen
-if(CONFIG_ARCH_POSIX)
-  # native_sim / native_posix: Host-Zeit über time.h
-  zephyr_library_sources(
-    src/arch/timestamp_arch_nativesim.c
-  )
-else()
-  # alle anderen Boards: Zephyr k_uptime
-  zephyr_library_sources(
-    src/arch/timestamp_arch_others.c
-  )
-endif()
 
-zephyr_include_directories(include)
-zephyr_include_directories(include/myos)
-zephyr_include_directories(include/myos/arch)
+zephyr_include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/${BOARD}
+)
+
+

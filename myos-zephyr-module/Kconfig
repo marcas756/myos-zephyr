@@ -67,16 +67,12 @@ config MYOS_PTIMER_LIST_TYPE_DLIST
 endchoice
 
 
-
-
 config MYOS_TIMESTAMP_SIZE
     int "MyOS timestamp size (bits)"
     default 16
     range 16 64
     help
       Valid values: 16, 32, 64
-
-
 
 config MYOS_DEBUG
   bool "Enable MyOs debug output"
@@ -120,6 +116,23 @@ config MYOS_DEBUG_TIMESTAMP
   default n
   help
     Enable debug output for the MyOs timestamp module.  
+
+
+
+
+
+menu "MyOs architecture options"
+
+config MYOS_ARCH_STM32_TIM6_BACKEND
+    bool "Use STM32 TIM6 as rtimer backend"
+    depends on SOC_FAMILY_STM32
+    depends on DT_HAS_ST_STM32_COUNTER_ENABLED
+    help
+      Use STM32 TIM6 (via Zephyr counter driver) as the free-running
+      hardware timer for MyOs rtimer.
+
+endmenu
+
 
 
 endif # MYOS

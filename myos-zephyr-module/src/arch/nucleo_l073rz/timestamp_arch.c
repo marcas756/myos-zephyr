@@ -27,19 +27,13 @@
 */
 
 
-#include "rtimer_arch.h"
+#include"timestamp_arch.h" 
+#include <zephyr/kernel.h>
 
-
-
-void rtimer_arch_timer_set(rtimer_arch_timestamp_t stop)
+timestamp_arch_t timestamp_arch_now(void)
 {
+      return (timestamp_arch_t)k_uptime_get_32(); 
 }
-
-
-
-
-
-
 
 
 

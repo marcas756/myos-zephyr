@@ -13,6 +13,10 @@
 LOG_MODULE_REGISTER(myos, LOG_LEVEL_INF);
 
 
+
+	
+
+
 static int my_early_init(void)
 {
 	printk("Early init \n");
@@ -32,12 +36,29 @@ PROCESS_THREAD(counter)
     PROCESS_BEGIN();
 
 	LOG_INF("Started counter process");
+
+
 	
 	while(1)
 	{
 		LOG_INF("Counter Process : %d", cnt++);
-		PROCESS_SLEEP(&et,TIMESTAMP_TICKS_PER_SEC);		
+
+		static uint32_t start;
+		static uint32_t stop;
+
+		start = rtimer_now();
+		//LOG_INF("TIM6 Counter Start Value: %u", start);
+
+
+		PROCESS_SLEEP(&et,TIMESTAMP_TICKS_PER_SEC/8);	
+		
+		stop = rtimer_now();
+		LOG_INF("Start:%d  Stop: %d Delta: %d\n", start,stop,RTIMER_TIMESTAMP_DIFF(stop,start));
+
+
+		
 	}
+
 
 	PROCESS_END();
 }
