@@ -1,0 +1,16 @@
+
+&usart2 {
+	current-speed = <230400>;
+};
+
+
+
+&timers9 {
+    status = "okay";
+    st,prescaler = <1679>;    /* 84 MHz / (1679 + 1) = 50 kHz */
+
+    counter {
+        status = "okay";
+    };
+};
+
