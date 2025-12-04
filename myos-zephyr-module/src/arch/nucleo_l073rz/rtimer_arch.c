@@ -39,6 +39,8 @@ void rtimer_arch_timer_callback(const struct device *dev,
 }
 
 
+
+
 void rtimer_arch_timer_set(rtimer_arch_timestamp_t stop)
 {
     struct counter_alarm_cfg alarm_cfg = {0};

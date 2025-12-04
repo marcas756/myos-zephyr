@@ -87,8 +87,8 @@ typedef dlist_node_t ptlist_node_t;
 #endif
 
 
-
-
+extern timestamp_t ptimer_next_stop;
+extern bool ptimer_pending;
 PROCESS_EXTERN(ptimer_process);
 
 

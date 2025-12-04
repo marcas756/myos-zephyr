@@ -363,49 +363,5 @@ void ptimer_reset(ptimer_t* ptimer)
 
 
 
-extern bool process_deliver_event(process_event_t *evt);
-
-
-
-void ptimer_processing_via_isr(void)
-{
-    // Process if there are pending timers and the next stop time has passed
-    if (ptimer_pending && timestamp_passed(ptimer_next_stop)) 
-    {
-        ptimer_pending = false;
-        process_poll(&ptimer_process);
-    }
-}
-
-void ptimer_processing(void)
-{
-    // Check for CONFIG_MYOS_STATISTICS to enable statistics
-#if defined(CONFIG_MYOS_STATISTICS)
-    rtimer_timestamp_t start;
-    rtimer_timespan_t slicetime;
-#endif
-
-    // Process if there are pending timers and the next stop time has passed
-    if (ptimer_pending && timestamp_passed(ptimer_next_stop)) {
-        ptimer_pending = false;
-
-        // Record start time if statistics are enabled
-#if defined(CONFIG_MYOS_STATISTICS)
-        start = rtimer_now();
-#endif
-
-        // Deliver the ptimer poll event to process expired timers
-        process_deliver_event((process_event_t*)&ptimer_poll_evt);
-
-        // Calculate and record the processing time for performance stats
-#if defined(CONFIG_MYOS_STATISTICS)
-        slicetime = (rtimer_timespan_t)RTIMER_TIMESTAMP_DIFF(rtimer_now(), start);
-        if (ptimer_process.maxslicetime < slicetime) {
-            ptimer_process.maxslicetime = slicetime;
-        }
-#endif
-    }
-}
-
 
 
