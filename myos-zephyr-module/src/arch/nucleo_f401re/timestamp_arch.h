@@ -57,7 +57,7 @@ typedef UTILS_UINT(CONFIG_MYOS_TIMESTAMP_SIZE) timestamp_arch_t;
     ((UTILS_INT(CONFIG_MYOS_TIMESTAMP_SIZE))((timestamp_arch_t)(a) - (timestamp_arch_t)(b)))
 
 
-#define timestamp_arch_module_init() do{}while(0)
+void timestamp_arch_module_init(void);
 timestamp_arch_t timestamp_arch_now(void);
 
 #endif /* TIMESTAMP_ARCH_H_ */

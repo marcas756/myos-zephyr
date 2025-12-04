@@ -41,13 +41,10 @@
 
 static timestamp_arch_t timestamp_counter = 0;
 
-
 #define TIM21_COUNTER_NODE DT_CHILD(DT_NODELABEL(timers21), counter)
 
 const struct device *const tim21_counter_dev =
     DEVICE_DT_GET(TIM21_COUNTER_NODE);
-
-
 
 timestamp_arch_t timestamp_arch_now(void)
 {
