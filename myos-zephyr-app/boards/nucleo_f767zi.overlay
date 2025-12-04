@@ -2,12 +2,14 @@
 	current-speed = <230400>;
 };
 
-&timers6 {
+&timers9 {
     status = "okay";
-    st,prescaler = <2159>;   /* 108 MHz / (2159+1) = 50 kHz */
+    st,prescaler = <4319>;    /* 216 MHz / (4319+1) = 50 kHz */
 
     counter {
         status = "okay";
     };
 };
+
+
 
