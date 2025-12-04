@@ -367,6 +367,16 @@ extern bool process_deliver_event(process_event_t *evt);
 
 
 
+void ptimer_processing_via_isr(void)
+{
+    // Process if there are pending timers and the next stop time has passed
+    if (ptimer_pending && timestamp_passed(ptimer_next_stop)) 
+    {
+        ptimer_pending = false;
+        process_poll(&ptimer_process);
+    }
+}
+
 void ptimer_processing(void)
 {
     // Check for CONFIG_MYOS_STATISTICS to enable statistics

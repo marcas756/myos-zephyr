@@ -32,7 +32,6 @@
 #include <zephyr/drivers/counter.h> // to access TIM21 on STM32	
 #include "debug.h"
 
-
 #if defined(CONFIG_MYOS_DEBUG_TIMESTAMP)
 #define DBG(...) DBG_FUNC(__VA_ARGS__)
 #else
@@ -40,6 +39,7 @@
 #endif
 
 static timestamp_arch_t timestamp_counter = 0;
+
 
 #define TIM21_COUNTER_NODE DT_CHILD(DT_NODELABEL(timers21), counter)
 
@@ -75,6 +75,7 @@ static struct counter_alarm_cfg alarm_cfg = {
             .user_data = NULL,
       };
 
+extern void ptimer_processing_via_isr(void);
 void timestamp_arch_myos_tick(const struct device *dev,
                                 uint8_t chan_id,
                                 uint32_t ticks,
@@ -85,9 +86,7 @@ void timestamp_arch_myos_tick(const struct device *dev,
 
       timestamp_counter++;
 
-
-
-
+      ptimer_processing_via_isr();
 
 
        /* Re-arm same channel (1) for the next 1 ms */

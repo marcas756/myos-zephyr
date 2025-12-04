@@ -335,7 +335,7 @@ inline int process_run(void)
 
    // Process protothread timers if enabled.
 
-   ptimer_processing();
+   //ptimer_processing();
 
 
    // Process events from the event queue.
