@@ -10,27 +10,11 @@
 #define DBG(...) do{}while(0)
 #endif
 
-/* Das ist der "counter" Subnode unter timers6 */
-#define TIM21_COUNTER_NODE DT_CHILD(DT_NODELABEL(timers21), counter)
-
-const struct device *const tim21_counter_dev =
-    DEVICE_DT_GET(TIM21_COUNTER_NODE);
+extern const struct device *const tim21_counter_dev;
 
 void rtimer_arch_init()
 {
-    if (!device_is_ready(tim21_counter_dev)) 
-	{
-    	DBG("rtimer: TIM21 counter device not ready!\n");
-		return;	
-	}
 
-    if (counter_start(tim21_counter_dev) != 0) 
-	{
-        DBG("rtimer: counter_start failed: \n");
-        return;
-    }   
-    
-    DBG("rtimer: initialized: \n");
 }
 
 rtimer_arch_timestamp_t rtimer_arch_now(void)

@@ -110,6 +110,12 @@ config MYOS_DEBUG_RTIMER
   help
     Enable debug output for the MyOs rtimer module.
 
+config MYOS_DEBUG_TIMESTAMP
+  bool "Debug: timestamp module"
+  depends on MYOS_DEBUG
+  default n
+  help
+    Enable debug output for the MyOs timestamp module.
 
 
 config MYOS_DEBUG_CORE

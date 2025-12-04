@@ -32,10 +32,6 @@
 
 #include <stdint.h>  
 
- #include <zephyr/drivers/counter.h> // to access TIM6 on STM32	
-
- 
-
 typedef uint16_t rtimer_arch_timestamp_t;
 typedef uint16_t rtimer_arch_timespan_t;
 

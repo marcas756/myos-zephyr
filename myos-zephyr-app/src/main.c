@@ -12,11 +12,6 @@
 
 LOG_MODULE_REGISTER(myos, LOG_LEVEL_INF);
 
-
-
-	
-
-
 static int my_early_init(void)
 {
 	printk("Early init \n");
@@ -25,22 +20,16 @@ static int my_early_init(void)
 
 SYS_INIT(my_early_init, POST_KERNEL, 50);
 
-
-
-
-
 void rtimer_callback(void* data)
 {
 	static int cnt = 0;
 
-	if( cnt++ < 100 )
+	if( cnt++ < 10 )
 	{
 		rtimer_t* rt = (rtimer_t*)data;	
 		rtimer_reset(rt);
 		rtimer_lock();
 	}
-
-
 
 	LOG_INF("Rtimer callback fired %d",cnt);
 }
