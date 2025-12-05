@@ -8,7 +8,7 @@
 #include <zephyr/logging/log.h>
 
 #include "myos.h"
-
+#include "mandelbrot.h"
 
 LOG_MODULE_REGISTER(myos, LOG_LEVEL_INF);
 
@@ -47,13 +47,14 @@ PROCESS_THREAD(counter)
 
 	LOG_INF("Started counter process");
 
+	process_start(&mandelbrot,NULL);
+
 	PROCESS_RTIMER_ACQUIRE();
 	rtimer_start(&rt, RTIMER_TICKS_PER_SEC/4 , rtimer_callback, &rt);
 	PROCESS_RTIMER_JOIN();
 	
 	while(1)
 	{
-		LOG_INF("Process loop %d",cnt++);
 		PROCESS_SLEEP(&et,TIMESTAMP_TICKS_PER_SEC);
 	}
 
