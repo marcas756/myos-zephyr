@@ -37,6 +37,7 @@
 #include "etimer.h"
 #include "debug.h"
 
+
 #if defined(CONFIG_MYOS_DEBUG_ETIMER)
 #define DBG(...) DBG_FUNC(__VA_ARGS__)
 #else
@@ -63,19 +64,18 @@ extern bool process_deliver_event(process_event_t *evt);
 static void etimer_timeout_handler(ptimer_t* ptimer)
 {  
    DBG("etimer : timeout handler called\n");
-   etimer_t *etimer = (etimer_t*)ptimer;
+   process_event_t *evt = &((etimer_t*)ptimer)->evt;
 
+#if defined(CONFIG_MYOS_ETIMER_DEFER_EVENTS)
+   PROCESS_CONTEXT_BEGIN(evt->from);
+   process_post(evt->to, evt->id, evt->data);
+   PROCESS_CONTEXT_END();
+#else
+   process_deliver_event(evt);
+#endif
 
-   if( PROCESS_IS_RUNNING(etimer->evt.to) )
-   {
-      process_deliver_event(&etimer->evt);
-      DBG("etimer : event delivered to process\n"); 
-   }
-   else 
-   {
-      DBG("etimer : target process not running, event not delivered\n");
-   }
 }
+
 
 
 void etimer_start(etimer_t *etimer, timespan_t span, process_t *to, process_event_id_t evtid, void *data)

@@ -134,20 +134,19 @@ config MYOS_DEBUG_TIMESTAMP
     Enable debug output for the MyOs timestamp module.  
 
 
+config MYOS_ETIMER_DEFER_EVENTS
+	bool "Defer etimer event delivery"
+	default y
+	help
+	  When enabled, the etimer timeout handler defers event handling by
+	  posting the event to the MyOs event queue using process_post().
+	  This avoids immediate delivery from the timer context.
+
+	  When disabled, the timeout handler delivers the event immediately
+	  using process_deliver_event().
 
 
 
-menu "MyOs architecture options"
-
-config MYOS_ARCH_STM32_TIM6_BACKEND
-    bool "Use STM32 TIM6 as rtimer backend"
-    depends on SOC_FAMILY_STM32
-    depends on DT_HAS_ST_STM32_COUNTER_ENABLED
-    help
-      Use STM32 TIM6 (via Zephyr counter driver) as the free-running
-      hardware timer for MyOs rtimer.
-
-endmenu
 
 
 
